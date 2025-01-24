@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Example</title>
+</head>
+<body>
+    <h1>Real-time Graph Viewer</h1>
+    <div id="output"></div>
+
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        // WebSocket接続を確立
+        const socket = io();
+
+        // サーバーからデータを受け取ったときの処理
+        socket.on('update_graph', (data) => {
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        });
+
+        // サーバーにデータ送信を開始させる
+        socket.emit('start');
+    </script>
+</body>
+</html>
+
