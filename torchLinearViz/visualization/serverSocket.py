@@ -25,7 +25,7 @@ def send_json_data():
         # サンプルデータを生成（ここを任意の処理に置き換え可能）
 
         # JSONファイルのパスを指定
-        json_path = '/app/resource/output.csv'  # 必要に応じてフルパスを記載
+        json_path = '/path/to/your/json'  # 必要に応じてフルパスを記載
         if not os.path.exists(json_path):
             return jsonify({"error": "JSON file not found"}), 404
         # JSONファイルを読み込み
@@ -41,5 +41,8 @@ def send_json_data():
 def handle_start():
     socketio.start_background_task(send_json_data)
 
+def main():
+    socketio.run(app, host='0.0.0.0', port=5001)
+
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000)
+    main()
