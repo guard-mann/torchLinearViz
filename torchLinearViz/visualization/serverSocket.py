@@ -13,7 +13,7 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def serve_html():
-    return send_from_directory('static', 'websocket.html')
+    return send_from_directory('static', 'frontendTest.html')
 
 
 # クライアントが接続した際に通知
@@ -44,7 +44,7 @@ def send_json_data():
         # サンプルデータを生成（ここを任意の処理に置き換え可能）
 
         # JSONファイルのパスを指定
-        json_path = '/path/to/your/json'  # 必要に応じてフルパスを記載
+        json_path = '/path/to/your/frontendTest.json'  # 必要に応じてフルパスを記載
         if not os.path.exists(json_path):
             return jsonify({"error": "JSON file not found"}), 404
         # JSONファイルを読み込み
@@ -56,7 +56,7 @@ def send_json_data():
         time.sleep(5)  # 5秒ごとに送信
 
 # サーバーの起動時にバックグラウンドでデータ送信を開始
-@socketio.on('start')
+@socketio.on('connect')
 def handle_start():
     socketio.start_background_task(send_json_data)
 

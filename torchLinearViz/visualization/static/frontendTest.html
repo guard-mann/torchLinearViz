@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Visualizer</title>
+    <!-- Cytoscape.js ライブラリ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.23.0/cytoscape.min.js"></script>
+    <!-- Socket.IO クライアントライブラリ -->
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <style>
+        #cy {
+            width: 100%;
+            height: 100vh;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cytoscape.js の描画領域 -->
+    <div id="cy"></div>
+    <!-- フロントエンドスクリプト -->
+    <script src="/static/frontendTestScript.js"></script>
+</body>
+</html>
