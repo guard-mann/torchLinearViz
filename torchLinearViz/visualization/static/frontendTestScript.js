@@ -7,13 +7,49 @@ let cy = cytoscape({
   elements: [], // JSON データをそのまま渡す
   style: [ // スタイル設定
     {
-      selector: 'node',
+      selector: 'node[type="linear"], node[type="prim::GetAttr"]',
       style: {
-        'background-color': '#0074D9',
-        'label': 'data(id)', // ノードの ID をラベルに表示
+        'background-color': '#1264bb',// https://tools.tolog.info/tools/color-code-converter より
+	'label': function (ele) {
+          return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
+        },
+	'font-size': 4,
         'width': 10,
-        'height': 10
+        'height': 10,
+        'text-valign': 'center',
+        'text-halign': 'center',
+	'text-wrap': 'wrap'
       }
+    },
+    {
+      selector: 'node[type="aten::relu"], node[type="sigmoid"]',
+      style: {
+        'background-color': '#92bb96',
+	'label': function (ele) {
+          return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
+        },
+	'font-size': 4,
+        'width': 3,
+        'height': 3,
+        'text-valign': 'center',
+        'text-halign': 'center',
+	'text-wrap': 'wrap'
+      }    
+    },
+    {
+      selector: 'node[type="prim::CallMethod"]',
+      style: {
+        'background-color': '#949594',
+	'label': function (ele) {
+          return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
+        },
+	'font-size': 4,
+        'width': 3,
+        'height': 3,
+        'text-valign': 'center',
+        'text-halign': 'center',
+	'text-wrap': 'wrap'
+      }    
     },
     {
       selector: 'edge',
@@ -21,7 +57,8 @@ let cy = cytoscape({
         'width': 'mapData(width, 1, 10, 1, 5)',
         'line-color': '#AAAAAA',
         'target-arrow-color': '#AAAAAA',
-        'target-arrow-shape': 'triangle'
+        'target-arrow-shape': 'triangle',
+	'curve-style': 'bezier'
       }
     }
   ],

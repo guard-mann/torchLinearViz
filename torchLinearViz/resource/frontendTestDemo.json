@@ -1,0 +1,110 @@
+{
+    "nodes": [
+        {
+            "data": {
+                "id": "fc2",
+                "type": "prim::GetAttr"
+            }
+        },
+        {
+            "data": {
+                "id": "fc1",
+                "type": "prim::GetAttr"
+            }
+        },
+        {
+            "data": {
+                "id": "input.1",
+                "type": "aten::relu"
+            }
+        },
+        {
+            "data": {
+                "id": "30",
+                "type": "prim::CallMethod"
+            }
+        },
+        {
+            "data": {
+                "id": "input.5",
+                "type": "aten::relu"
+            }
+        },
+        {
+            "data": {
+                "id": "31",
+                "type": "prim::CallMethod"
+            }
+        },
+        {
+            "data": {
+                "id": "input",
+                "type": "aten::relu"
+            }
+        },
+        {
+            "data": {
+                "id": "19",
+                "type": "aten::relu"
+            }
+        }
+    ],
+    "edges": [
+        {
+            "data": {
+                "id": "e1",
+                "source": "fc1",
+                "target": "30",
+                "width": 1
+            }
+        },
+        {
+            "data": {
+                "id": "e2",
+                "source": "input.1",
+                "target": "30",
+                "width": 1
+            }
+        },
+        {
+            "data": {
+                "id": "e3",
+                "source": "30",
+                "target": "input.5",
+                "width": 1
+            }
+        },
+        {
+            "data": {
+                "id": "e4",
+                "source": "fc2",
+                "target": "31",
+                "width": 1
+            }
+        },
+        {
+            "data": {
+                "id": "e5",
+                "source": "input.5",
+                "target": "31",
+                "width": 1
+            }
+        },
+        {
+            "data": {
+                "id": "e6",
+                "source": "31",
+                "target": "input",
+                "width": 1
+            }
+        },
+        {
+            "data": {
+                "id": "e7",
+                "source": "input",
+                "target": "19",
+                "width": 1
+            }
+        }
+    ]
+}
