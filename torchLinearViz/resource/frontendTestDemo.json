@@ -4,49 +4,51 @@
             "data": {
                 "id": "fc2",
                 "type": "prim::GetAttr"
-            }
+            }, 
+	    "position": {
+                "x":0.2,
+		"y":0.5
+	    }
         },
         {
             "data": {
                 "id": "fc1",
                 "type": "prim::GetAttr"
-            }
+            }, 
+	    "position": {
+                "x":0.4,
+		"y":0.5
+	    }
         },
         {
             "data": {
-                "id": "input.1",
-                "type": "aten::relu"
-            }
-        },
-        {
-            "data": {
-                "id": "30",
+                "id": "28",
                 "type": "prim::CallMethod"
-            }
+            }, 
+	    "position": {
+                "x":0.5,
+		"y":0.5
+	    }
         },
         {
             "data": {
-                "id": "input.5",
+                "id": "input.3",
                 "type": "aten::relu"
-            }
+            }, 
+	    "position": {
+                "x":0.6,
+		"y":0.5
+	    }
         },
         {
             "data": {
-                "id": "31",
+                "id": "29",
                 "type": "prim::CallMethod"
-            }
-        },
-        {
-            "data": {
-                "id": "input",
-                "type": "aten::relu"
-            }
-        },
-        {
-            "data": {
-                "id": "19",
-                "type": "aten::relu"
-            }
+            }, 
+	    "position": {
+                "x":0.8,
+		"y":0.5
+	    }
         }
     ],
     "edges": [
@@ -54,55 +56,31 @@
             "data": {
                 "id": "e1",
                 "source": "fc1",
-                "target": "30",
+                "target": "28",
                 "width": 1
             }
         },
         {
             "data": {
                 "id": "e2",
-                "source": "input.1",
-                "target": "30",
+                "source": "28",
+                "target": "input.3",
                 "width": 1
             }
         },
         {
             "data": {
                 "id": "e3",
-                "source": "30",
-                "target": "input.5",
+                "source": "fc2",
+                "target": "29",
                 "width": 1
             }
         },
         {
             "data": {
                 "id": "e4",
-                "source": "fc2",
-                "target": "31",
-                "width": 1
-            }
-        },
-        {
-            "data": {
-                "id": "e5",
-                "source": "input.5",
-                "target": "31",
-                "width": 1
-            }
-        },
-        {
-            "data": {
-                "id": "e6",
-                "source": "31",
-                "target": "input",
-                "width": 1
-            }
-        },
-        {
-            "data": {
-                "id": "e7",
-                "source": "input",
-                "target": "19",
+                "source": "input.3",
+                "target": "29",
                 "width": 1
             }
         }

@@ -1,6 +1,10 @@
 // WebSocket サーバーに接続
 const socket = io.connect('http://localhost:5000');
 
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
+
+
 // Cytoscape.js でグラフを描画
 let cy = cytoscape({
   container: document.getElementById('cy'), // 描画する HTML 要素
@@ -13,9 +17,10 @@ let cy = cytoscape({
 	'label': function (ele) {
           return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
         },
-	'font-size': 4,
-        'width': 10,
-        'height': 10,
+	'shape': 'rectangle',
+	'font-size': 18,
+        'width': 100,
+        'height': 100,
         'text-valign': 'center',
         'text-halign': 'center',
 	'text-wrap': 'wrap'
@@ -28,9 +33,10 @@ let cy = cytoscape({
 	'label': function (ele) {
           return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
         },
-	'font-size': 4,
-        'width': 3,
-        'height': 3,
+	'shape': 'rectangle',
+	'font-size': 18,
+        'width': 100,
+        'height': 100,
         'text-valign': 'center',
         'text-halign': 'center',
 	'text-wrap': 'wrap'
@@ -43,9 +49,10 @@ let cy = cytoscape({
 	'label': function (ele) {
           return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
         },
-	'font-size': 4,
-        'width': 3,
-        'height': 3,
+	'shape': 'rectangle',
+	'font-size': 18,
+        'width': 100,
+        'height': 100,
         'text-valign': 'center',
         'text-halign': 'center',
 	'text-wrap': 'wrap'
@@ -63,14 +70,46 @@ let cy = cytoscape({
     }
   ],
   layout: { // グラフのレイアウト設定
-    name: 'cose', // 力学モデルに基づくレイアウト
-    idealEdgeLength: 100,
-    nodeRepulsion: 10000,
-    animate: true,
-    randomized: true,
-    seed: 42
-  }
+    name: 'dagre', // 力学モデルに基づくレイアウト
+//    rankDir: 'TB', // "TB" = 上から下へ流れる
+//    idealEdgeLength: 100,
+//    nodeRepulsion: 10000,
+//    animate: true,
+//    randomized: true,
+//    seed: 42
+  },
+  /*
+  ready: function () {
+    // Cytoscape.js 初期化後の処理
+    this.nodes().forEach(node => {
+      const relativeX = node.position().x; // 相対位置を取得
+      const relativeY = node.position().y;
+
+      // スケールを調整
+      node.position({
+        x: relativeX * viewportWidth,
+        y: relativeY * viewportHeight
+      });
+    });
+    this.fit();
+  }*/
 });
+
+
+/*
+window.addEventListener('resize', () => {
+  cy.nodes().forEach(node => {
+    const relativeX = node.position().x;
+    const relativeY = node.position().y;
+    if (node.position().x <= 1) {
+	node.position({
+	  x: relativeX * viewportWidth,
+	  y: relativeY * viewportHeight
+	});
+    }
+  });
+  cy.fit();
+});*/
 
 socket.on('connect', () => {
     console.log('WebSocket connected');
@@ -87,13 +126,25 @@ socket.on('update_graph', (data) => {
 
   console.log("Received data:", data);
   if (!initialized) {
-    // 初回だけレイアウトを実行
     cy.json({ elements: data });
+
+    // ノードのスケールを調整
+    /*cy.nodes().forEach(node => {
+      const relativeX = node.position().x; // 相対位置を取得
+      const relativeY = node.position().y;
+      node.position({
+        x: relativeX * viewportWidth, // 絶対位置にスケール
+        y: relativeY * viewportHeight
+      });
+    });*/
+
+    // 初回だけレイアウトを実行
     cy.layout({
-      name: 'cose',
-      idealEdgeLength: 50,
-      nodeRepulsion: 10000,
-      animate: true
+      name: 'dagre',
+//      rankDir: 'TB'
+//      idealEdgeLength: 50,
+//      nodeRepulsion: 10000,
+//      animate: true
     }).run();
     initialized = true;
   } else {
