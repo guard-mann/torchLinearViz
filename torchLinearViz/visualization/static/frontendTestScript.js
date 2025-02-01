@@ -91,7 +91,7 @@ let cy = cytoscape({
     {
       selector: 'edge',
       style: {
-        'width': 'mapData(width, 1, 10, 1, 5)',
+        'width': 'mapData(width, 0, 0.2, 1, 5)',
         'line-color': '#090808',
         'target-arrow-color': '#090808',
         'target-arrow-shape': 'triangle',
@@ -191,7 +191,7 @@ socket.on('update_graph', (data) => {
   cy.edges().forEach(edge => {
     const edgeData = data.edges.find(e => e.data.id === edge.id());
     if (edgeData) {
-      edge.style('width', edgeData.data.width); // サーバーからの新しい width を適用
+	edge.style('width', mapData(edgeData.data.width, 0, 0.2, 1, 5))
     }
   });
 
