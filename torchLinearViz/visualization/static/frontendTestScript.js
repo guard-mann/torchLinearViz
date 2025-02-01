@@ -79,7 +79,6 @@ let cy = cytoscape({
 	'label': function (ele) {
           return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
         },
-	'shape': 'round',
 	'font-size': 18,
         'width': 25,
         'height': 25,
@@ -91,7 +90,7 @@ let cy = cytoscape({
     {
       selector: 'edge',
       style: {
-        'width': 'mapData(width, 0, 0.2, 1, 5)',
+        'width': 'mapData(width, 0, 1, 1, 5)',
         'line-color': '#090808',
         'target-arrow-color': '#090808',
         'target-arrow-shape': 'triangle',
@@ -156,44 +155,44 @@ let initialized = false;
 
 // WebSocket からデータを受信
 socket.on('update_graph', (data) => {
-
+  console.log("Recieved updated data :", data);
   console.log("Received data:", data);
   if (!initialized) {
     cy.json({ elements: data });
-
-    // ノードのスケールを調整
-    /*cy.nodes().forEach(node => {
-      const relativeX = node.position().x; // 相対位置を取得
-      const relativeY = node.position().y;
-      node.position({
-        x: relativeX * viewportWidth, // 絶対位置にスケール
-        y: relativeY * viewportHeight
-      });
-    });*/
 
     // 初回だけレイアウトを実行
     cy.layout({
       name: 'dagre',
       rankSep: 500,
       nodeSep: 500,
-//      rankDir: 'TB'
-//      idealEdgeLength: 50,
-//      nodeRepulsion: 10000,
-//      animate: true
     }).run();
     initialized = true;
   } else {
     // 初回以降はデータを更新するだけでレイアウトを再実行しない
-    cy.add(data.nodes);
-    cy.add(data.edges);
+    console.log("Adding New edges: ", data.edges);
+//    cy.edges().remove();
+//    cy.add(data.nodes);
+//    cy.add(data.edges);
+    cy.json({elements: data});
+    cy.layout({
+      name: 'dagre',
+      rankSep: 500,
+      nodeSep: 500,
+    }).run();
   }
   
-  cy.edges().forEach(edge => {
-    const edgeData = data.edges.find(e => e.data.id === edge.id());
-    if (edgeData) {
-	edge.style('width', mapData(edgeData.data.width, 0, 0.2, 1, 5))
-    }
-  });
+//  cy.batch(() => {
+//        cy.edges().forEach(edge => {
+//            const edgeData = data.edges.find(e => e.data.id === edge.id());
+//            if (edgeData) {
+//                edge.style({
+//                    'width': edgeData.data.width,
+//                    'line-color': '#090808',
+//                });
+//            }
+//        });
+//  });
+
 
 });
 
