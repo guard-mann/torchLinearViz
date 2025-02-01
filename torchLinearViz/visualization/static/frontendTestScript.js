@@ -11,7 +11,22 @@ let cy = cytoscape({
   elements: [], // JSON データをそのまま渡す
   style: [ // スタイル設定
     {
-      selector: 'node[type="linear"], node[type="prim::GetAttr"]',
+      selector: 'node',
+      style: {
+	'label': function (ele) {
+          return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
+        },
+	'shape': 'rectangle',
+	'font-size': 18,
+        'width': 100,
+        'height': 100,
+        'text-valign': 'center',
+        'text-halign': 'center',
+	'text-wrap': 'wrap'
+      }
+    },
+    {
+      selector: 'node[type="Linear"]',
       style: {
         'background-color': '#1264bb',// https://tools.tolog.info/tools/color-code-converter より
 	'label': function (ele) {
@@ -27,9 +42,9 @@ let cy = cytoscape({
       }
     },
     {
-      selector: 'node[type="aten::relu"], node[type="sigmoid"]',
+      selector: 'node[type="MaxPool2d"], node[type="AdaptiveAvgPool2d"]',
       style: {
-        'background-color': '#92bb96',
+        'background-color': '#b82b17',
 	'label': function (ele) {
           return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
         },
@@ -43,9 +58,9 @@ let cy = cytoscape({
       }    
     },
     {
-      selector: 'node[type="prim::CallMethod"]',
+      selector: 'node[type="Conv2d"], node[type="Conv3d"]',
       style: {
-        'background-color': '#949594',
+        'background-color': '#17b81b',
 	'label': function (ele) {
           return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
         },
@@ -53,6 +68,21 @@ let cy = cytoscape({
 	'font-size': 18,
         'width': 100,
         'height': 100,
+        'text-valign': 'center',
+        'text-halign': 'center',
+	'text-wrap': 'wrap'
+      }    
+    },
+    {
+      selector: 'node[type="UNIT"]',
+      style: {
+	'label': function (ele) {
+          return ele.data('id') + '\n(' + ele.data('type') + ')'; // IDとタイプを結合
+        },
+	'shape': 'round',
+	'font-size': 18,
+        'width': 25,
+        'height': 25,
         'text-valign': 'center',
         'text-halign': 'center',
 	'text-wrap': 'wrap'
@@ -62,15 +92,18 @@ let cy = cytoscape({
       selector: 'edge',
       style: {
         'width': 'mapData(width, 1, 10, 1, 5)',
-        'line-color': '#AAAAAA',
-        'target-arrow-color': '#AAAAAA',
+        'line-color': '#090808',
+        'target-arrow-color': '#090808',
         'target-arrow-shape': 'triangle',
-	'curve-style': 'bezier'
+	'curve-style': 'bezier',
+	'opacity': 0.5
       }
     }
   ],
   layout: { // グラフのレイアウト設定
     name: 'dagre', // 力学モデルに基づくレイアウト
+    rankSep: 500,
+    nodeSep: 500,
 //    rankDir: 'TB', // "TB" = 上から下へ流れる
 //    idealEdgeLength: 100,
 //    nodeRepulsion: 10000,
@@ -141,6 +174,8 @@ socket.on('update_graph', (data) => {
     // 初回だけレイアウトを実行
     cy.layout({
       name: 'dagre',
+      rankSep: 500,
+      nodeSep: 500,
 //      rankDir: 'TB'
 //      idealEdgeLength: 50,
 //      nodeRepulsion: 10000,
