@@ -100,48 +100,11 @@ let cy = cytoscape({
     }
   ],
   layout: { // グラフのレイアウト設定
-    name: 'dagre', // 力学モデルに基づくレイアウト
+    name: 'dagre',
     rankSep: 500,
     nodeSep: 500,
-//    rankDir: 'TB', // "TB" = 上から下へ流れる
-//    idealEdgeLength: 100,
-//    nodeRepulsion: 10000,
-//    animate: true,
-//    randomized: true,
-//    seed: 42
   },
-  /*
-  ready: function () {
-    // Cytoscape.js 初期化後の処理
-    this.nodes().forEach(node => {
-      const relativeX = node.position().x; // 相対位置を取得
-      const relativeY = node.position().y;
-
-      // スケールを調整
-      node.position({
-        x: relativeX * viewportWidth,
-        y: relativeY * viewportHeight
-      });
-    });
-    this.fit();
-  }*/
 });
-
-
-/*
-window.addEventListener('resize', () => {
-  cy.nodes().forEach(node => {
-    const relativeX = node.position().x;
-    const relativeY = node.position().y;
-    if (node.position().x <= 1) {
-	node.position({
-	  x: relativeX * viewportWidth,
-	  y: relativeY * viewportHeight
-	});
-    }
-  });
-  cy.fit();
-});*/
 
 socket.on('connect', () => {
     console.log('WebSocket connected');
@@ -170,9 +133,6 @@ socket.on('update_graph', (data) => {
   } else {
     // 初回以降はデータを更新するだけでレイアウトを再実行しない
     console.log("Adding New edges: ", data.edges);
-//    cy.edges().remove();
-//    cy.add(data.nodes);
-//    cy.add(data.edges);
     cy.json({elements: data});
     cy.layout({
       name: 'dagre',
@@ -180,20 +140,6 @@ socket.on('update_graph', (data) => {
       nodeSep: 500,
     }).run();
   }
-  
-//  cy.batch(() => {
-//        cy.edges().forEach(edge => {
-//            const edgeData = data.edges.find(e => e.data.id === edge.id());
-//            if (edgeData) {
-//                edge.style({
-//                    'width': edgeData.data.width,
-//                    'line-color': '#090808',
-//                });
-//            }
-//        });
-//  });
-
-
 });
 
 socket.emit('start')
