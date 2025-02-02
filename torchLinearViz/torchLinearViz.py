@@ -97,7 +97,7 @@ class TorchLinearViz:
     
     <div id="controls">
         <label for="epoch-slider">Epoch : <span id="epoch-label">0</span></label>
-        <input type="range" id="epoch-slider" min="0" max="9" value="0" step="1">
+        <input type="range" id="epoch-slider" min="0" value="0" step="1">
         <button id="play-button">▶ Start Video</button>  <!-- 再生ボタンを追加 -->
     </div>
     <div id="cy"></div>
@@ -106,6 +106,7 @@ class TorchLinearViz:
         let epochData = {epoch_graphs_json};
         let cy;
         let epochSlider = document.getElementById("epoch-slider");
+        epochSlider.max = epochData.length - 1; // 最大値をデータの長さに設定
         let epochLabel = document.getElementById("epoch-label");
         let playButton = document.getElementById("play-button");
         let isPlaying = false;
@@ -163,7 +164,7 @@ class TorchLinearViz:
                 isPlaying = true;
 
                 playInterval = setInterval(() => {{
-                    if (currentEpoch >= epochSlider.max) {{
+                    if (currentEpoch >= epochData.length) {{
                         clearInterval(playInterval);
                         isPlaying = false;
                         playButton.textContent = "▶ Start Video";
