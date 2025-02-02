@@ -83,7 +83,7 @@ class TorchLinearViz:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualization per epoch</title>
+    <title>Summary | TorchLinearViz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.23.0/cytoscape.min.js"></script>
     <script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
     <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.5.0/cytoscape-dagre.js"></script>
@@ -94,29 +94,32 @@ class TorchLinearViz:
 </head>
 <body>
 
-    <h2>Visualization per epoch</h2>
+    <h2>Graph / epochs</h2>
     
     <div id="controls">
         <label for="epoch-slider">Epoch : <span id="epoch-label">0</span></label>
         <input type="range" id="epoch-slider" min="0" max="9" value="0" step="1">
-	<button id="play-button">▶ Start Video</button>  <!-- 再生ボタンを追加 -->
+        <button id="play-button">▶ Start Video</button>  <!-- 再生ボタンを追加 -->
     </div>
-
     <div id="cy"></div>
 
-    <script>
-        // Python から埋め込んだエポックデータ
+    <script> // Python から埋め込んだエポックデータ
         let epochData = {epoch_graphs_json};
-
         let cy;
         let epochSlider = document.getElementById("epoch-slider");
         let epochLabel = document.getElementById("epoch-label");
-	let playButton = document.getElementById("play-button");
-	let isPlaying = false;
+        let playButton = document.getElementById("play-button");
+        let isPlaying = false;
         let playInterval = null;
 
         function updateGraph(epochIndex) {{
             let graph = epochData[epochIndex].graph;
+
+            if (cy) {{
+                zoomLevel = cy.zoom();
+                panPosition = cy.pan();
+            }}
+
             if (!cy) {{
                 cy = cytoscape({{
                     container: document.getElementById("cy"),
@@ -133,8 +136,16 @@ class TorchLinearViz:
                 cy.layout({{ name: 'dagre', rankSep: 100, nodeSep: 100 }}).run();
                 }}
 
+            // 📌 変更後にズーム・位置を適用
+            cy.zoom(zoomLevel);
+            cy.pan(panPosition);
+
             epochLabel.textContent = `${{epochIndex + 1}}/${{epochData.length - 1}}`;
             }}
+        cy?.on('zoom pan', function () {{
+            zoomLevel = cy.zoom();
+            panPosition = cy.pan();
+        }});
 
         // スライダーイベント
         epochSlider.addEventListener("input", function() {{
