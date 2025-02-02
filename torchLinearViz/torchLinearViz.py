@@ -6,12 +6,11 @@ import json
 
 
 class TorchLinearViz:
-    def __init__(self, model, input_tensor):
+    def __init__(self, model):
         """
         モデルと入力テンソルを受け取り、初期化。
         """
         self.model = model
-        self.input_tensor = input_tensor
         self.json_data_list = []
         self.epoch = 0
         self.json_data = None
@@ -26,7 +25,7 @@ class TorchLinearViz:
         """
         モデルのグラフ構造を抽出し、JSON形式で保存。
         """
-        self.json_data = analyse_graph(model, self.input_tensor)
+        self.json_data = analyse_graph(model)
         with open('/path/to/output.json', 'w') as f:
             json.dump(self.json_data, f, indent=4)
             
