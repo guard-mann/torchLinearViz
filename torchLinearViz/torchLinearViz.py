@@ -26,7 +26,7 @@ class TorchLinearViz:
         モデルのグラフ構造を抽出し、JSON形式で保存。
         """
         self.json_data = analyse_graph(model)
-        with open('/path/to/output.json', 'w') as f:
+        with open('./torchLinearViz/resource/updated.json', 'w') as f:
             json.dump(self.json_data, f, indent=4)
             
         saveDict = {
@@ -89,6 +89,12 @@ class TorchLinearViz:
     <style>
         #cy {{ width: 100%; height: 600px; border: 1px solid black; }}
         #controls {{ margin: 10px; }}
+        .control-button {{
+            width: 120px;  /* ボタンの横幅 */
+            height: 40px;  /* ボタンの高さ */
+            text-align: center;
+            font-size: 16px;
+        }}
     </style>
 </head>
 <body>
@@ -96,8 +102,8 @@ class TorchLinearViz:
     <h2>Graph / epochs</h2>
     
     <div id="controls">
-        <button id="play-button">▶ Start Video</button>
-        <label for="epoch-slider">Epoch : <span id="epoch-label">0</span></label>
+        <button id="play-button", class="control-button">▶ Start Video</button>
+        <label for="epoch-slider">Epoch : <span id="epoch-label"></span></label>
         <input type="range" id="epoch-slider" min="0" value="0" step="1">
         <label for="speed-slider">Speed: <span id="speed-label">x1</span></label>
         <input type="range" id="speed-slider" min="1" max="10" value="1" step="1">
@@ -110,6 +116,7 @@ class TorchLinearViz:
         let epochSlider = document.getElementById("epoch-slider");
         epochSlider.max = epochData.length - 1; // 最大値をデータの長さに設定
         let epochLabel = document.getElementById("epoch-label");
+        epochLabel.textContent = `0/${{epochData.length - 1}}`
         let playButton = document.getElementById("play-button");
         let isPlaying = false;
         let playInterval = null;
@@ -121,6 +128,7 @@ class TorchLinearViz:
         speedSlider.value = 1; // 初期値（通常の1倍速）
         speedLabel.textContent = `x${{speedSlider.value}}`;
         let playbackSpeed = parseInt(speedSlider.value); // 初期速度（1エポック/秒）
+
 
 
         function updateGraph(epochIndex) {{
@@ -151,7 +159,7 @@ class TorchLinearViz:
             cy.zoom(zoomLevel);
             cy.pan(panPosition);
 
-            epochLabel.textContent = `${{epochIndex + 1}}/${{epochData.length - 1}}`;
+            epochLabel.textContent = `${{epochIndex}}/${{epochData.length - 1}}`;
             }}
         cy?.on('zoom pan', function () {{
             zoomLevel = cy.zoom();
