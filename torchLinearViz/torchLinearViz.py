@@ -96,9 +96,11 @@ class TorchLinearViz:
     <h2>Graph / epochs</h2>
     
     <div id="controls">
+        <button id="play-button">▶ Start Video</button>
         <label for="epoch-slider">Epoch : <span id="epoch-label">0</span></label>
         <input type="range" id="epoch-slider" min="0" value="0" step="1">
-        <button id="play-button">▶ Start Video</button>  <!-- 再生ボタンを追加 -->
+        <label for="speed-slider">Speed: <span id="speed-label">x1</span></label>
+        <input type="range" id="speed-slider" min="1" max="10" value="1" step="1">
     </div>
     <div id="cy"></div>
 
@@ -111,6 +113,15 @@ class TorchLinearViz:
         let playButton = document.getElementById("play-button");
         let isPlaying = false;
         let playInterval = null;
+
+        let speedSlider = document.getElementById("speed-slider");
+        let speedLabel = document.getElementById("speed-label");
+        speedSlider.min = 1;  // 1倍速
+        speedSlider.max = 10; // 最大10倍速
+        speedSlider.value = 1; // 初期値（通常の1倍速）
+        speedLabel.textContent = `x${{speedSlider.value}}`;
+        let playbackSpeed = parseInt(speedSlider.value); // 初期速度（1エポック/秒）
+
 
         function updateGraph(epochIndex) {{
             let graph = epochData[epochIndex].graph;
@@ -126,7 +137,7 @@ class TorchLinearViz:
                     elements: graph,
                     style: [
                         {{ selector: 'node', style: {{ 'label': 'data(id)', 'background-color': '#0074D9', 'shape': 'rectangle'}} }},
-                        {{ selector: 'edge', style: {{ 'width': 'mapData(width, 0, 5, 1, 5)', 'line-color': '#666', 'curve-style': 'bezier' }} }}
+                        {{ selector: 'edge', style: {{ 'width': 'mapData(width, 0, 1, 1, 5)', 'line-color': '#666', 'curve-style': 'bezier' }} }}
                     ],
                     layout: {{ name: 'dagre', rankSep: 100, nodeSep: 100 }}
                     }});
@@ -152,6 +163,35 @@ class TorchLinearViz:
             updateGraph(parseInt(this.value));
         }});
 
+        speedSlider.addEventListener("input", function() {{
+            playbackSpeed = parseInt(this.value);
+            speedLabel.textContent = `x${{playbackSpeed}}`;
+            if (isPlaying) {{
+                clearInterval(playInterval); // **既存の再生を止めて**
+                startPlayback(); // **新しい速度で即座に再開**
+            }}
+	    }});
+
+        function startPlayback() {{
+            let currentEpoch = parseInt(epochSlider.value);
+            playInterval = setInterval(() => {{
+            if (currentEpoch >= epochSlider.max) {{
+                clearInterval(playInterval);
+                isPlaying = false;
+                playButton.textContent = "▶ Start Video";
+            }} else {{
+                currentEpoch++;
+                if (currentEpoch > epochSlider.max) {{
+                currentEpoch = epochSlider.max;
+                }}
+                epochSlider.value = currentEpoch;
+                updateGraph(currentEpoch);
+            }}
+            }}, 1000 / playbackSpeed);
+        }}
+
+
+
 	    // 自動再生機能
         function playAnimation() {{
             if (isPlaying) {{
@@ -173,7 +213,7 @@ class TorchLinearViz:
                         epochSlider.value = currentEpoch;
                         updateGraph(currentEpoch);
                         }}
-                }}, 1000); // 1秒ごとに次のエポックを表示
+                }}, 1000 / playbackSpeed ); // 1秒ごとに次のエポックを表示
             }}
         }}
 
