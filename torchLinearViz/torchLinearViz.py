@@ -3,7 +3,7 @@ from .analyse_graph import analyse_graph
 from .visualization.serverSocket import start_server, stop_server  # サーバーの開始と停止関数
 import threading
 import json
-
+import time
 
 class TorchLinearViz:
     def __init__(self, model):
@@ -15,18 +15,17 @@ class TorchLinearViz:
         self.epoch = 0
         self.json_data = None
         self.server_thread = None
-#        self.hook_handles = []
         self.is_running = False
 
-        # 初期グラフを抽出
-        self.extract_and_save_graph(self.model)
+#        初期グラフを抽出
+#        self.extract_and_save_graph(self.model)
 
-    def extract_and_save_graph(self, model):
+    def extract_and_save_graph(self, model, input):
         """
         モデルのグラフ構造を抽出し、JSON形式で保存。
         """
-        self.json_data = analyse_graph(model)
-        with open('./torchLinearViz/resource/updated.json', 'w') as f:
+        self.json_data = analyse_graph(model, input)
+        with open('./torchLinearViz/resource/updated.json', 'a') as f:
             json.dump(self.json_data, f, indent=4)
             
         saveDict = {
@@ -40,43 +39,20 @@ class TorchLinearViz:
     def start(self, host='0.0.0.0', port=5000, browser=True):
         """
         サーバーを開始して、Webブラウザを起動。
+        -> 不要
         """
-        self.is_running = True
-        self.server_thread = threading.Thread(
-            target=start_server, args=(host, port, browser), daemon=True
-        )
-        self.server_thread.start()
-
-        # モデルにフックを登録
-#        self.register_hooks()
-    '''
-    def register_hooks(self):
-        def hook_fn(module, inputs, outputs):
-            """
-            フックが呼ばれるたびにJSONデータを更新。
-            """
-            self.extract_and_save_graph()
-
-        # モデルのすべてのモジュールにフックを登録
-        for module in self.model.modules():
-            handle = module.register_forward_hook(hook_fn)
-            self.hook_handles.append(handle)
-    '''
-    def update(self, model):
+    def update(self, model, input):
         """
         モデルのグラフを再解析して更新する
         """
-        self.extract_and_save_graph(model)
-        print("Graph updated!")
+        self.extract_and_save_graph(model, input)
 
     def end(self):
         """
         サーバーを停止し、フックを解除。
         """
         self.is_running = False
-
         epoch_graphs_json = json.dumps(self.json_data_list)
-        print('>>> ', self.json_data_list)
         html_template = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -86,6 +62,8 @@ class TorchLinearViz:
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.23.0/cytoscape.min.js"></script>
     <script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
     <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.5.0/cytoscape-dagre.js"></script>
+    <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-cola@2.4.0/cytoscape-cola.min.js"></script>
     <style>
         #cy {{ width: 100%; height: 600px; border: 1px solid black; }}
         #controls {{ margin: 10px; }}
@@ -146,6 +124,7 @@ class TorchLinearViz:
         const minInput = document.getElementById("min-value-input");
         const maxInput = document.getElementById("max-value-input");
         const applyButton = document.getElementById("apply-width-btn");
+        let epochNodePositions = {{}}
 
         // "Apply" ボタンを押したときに反映
         applyButton.addEventListener("click", function() {{
@@ -180,7 +159,23 @@ class TorchLinearViz:
                     container: document.getElementById("cy"),
                     elements: graph,
                     style: [
-                        {{ selector: 'node', style: {{ 'label': 'data(id)', 'background-color': '#0074D9', 'shape': 'rectangle'}} }},
+                        {{ selector: 'node', style: {{ 'label': 'data(id)', 'background-color': '#0074D9', 'shape': 'rectangle', 'width': 100, 'height': 100}} }},
+
+                        {{ selector: 'node[type="UNIT"]',
+                           style: {{
+                            'background-color': '#6b6a6a',
+                            "label": 'data(id)',
+                            'shape': 'rectangle',
+                            'font-size': 18,
+                            'width': 25,
+                            'height': 25,
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'text-wrap': 'wrap'
+                          }}
+                        }},
+
+
                         {{ selector: 'edge', style: {{ 'width': 'mapData(width, 0, 1, 1, 5)', 'line-color': '#666', 'curve-style': 'bezier' }} }}
                     ],
                     layout: {{ name: 'dagre', rankSep: 100, nodeSep: 100 }}
@@ -190,6 +185,14 @@ class TorchLinearViz:
                 cy.add(graph);
                 cy.layout({{ name: 'dagre', rankSep: 100, nodeSep: 100 }}).run();
                 }}
+
+            if (epochNodePositions[epochIndex]) {{
+                cy.nodes().forEach(node => {{
+                    if (epochNodePositions[epochIndex][node.id()]) {{
+                        node.position(epochNodePositions[epochIndex][node.id()]);
+                    }}
+                }});
+            }}
 
             // 📌 変更後にズーム・位置を適用
             cy.zoom(zoomLevel);
@@ -247,6 +250,16 @@ class TorchLinearViz:
                 playButton.textContent = "■ Pause";
                 isPlaying = true;
 
+                epochNodePositions[currentEpoch] = {{}};
+                for (let epochIndex = 0; epochIndex < epochData.length; epochIndex++){{
+                    if (!epochNodePositions[epochIndex]) {{
+                    epochNodePositions[epochIndex] = {{}};
+                    }}
+                    cy.nodes().forEach(node => {{
+                    epochNodePositions[epochIndex][node.id()] = node.position();
+                    }}); 
+                }}
+
                 playInterval = setInterval(() => {{
                     if (currentEpoch >= epochData.length) {{
                         clearInterval(playInterval);
@@ -279,11 +292,6 @@ class TorchLinearViz:
 #        if self.server_thread:
 #            stop_server()  # サーバーを停止するための関数
 #            self.server_thread.join()
-
-        # フックを解除
-#        for handle in self.hook_handles:
-#            handle.remove()
-#        self.hook_handles = []
 
         print("torchLinearViz has been stopped.")
 
