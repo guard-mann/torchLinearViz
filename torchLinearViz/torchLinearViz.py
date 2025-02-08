@@ -12,8 +12,10 @@ class TorchLinearViz:
         """
         self.model = model
         self.json_data_list = []
+        self.json_data_diff_list = []
         self.epoch = 0
         self.json_data = None
+        self.json_data_diff = None
         self.server_thread = None
         self.is_running = False
 
@@ -24,23 +26,21 @@ class TorchLinearViz:
         """
         モデルのグラフ構造を抽出し、JSON形式で保存。
         """
-        self.json_data = analyse_graph(model, input)
-        with open('./torchLinearViz/resource/updated.json', 'a') as f:
-            json.dump(self.json_data, f, indent=4)
-            
+        self.json_data, self.json_data_diff = analyse_graph(model, input, self.json_data_list)
+           
         saveDict = {
                 "epoch": self.epoch,
                 "graph": self.json_data
         }
-        self.json_data_list.append(saveDict)
+        saveDictDiff = {
+                "epoch": self.epoch,
+                "graph": self.json_data_diff
+        }
+        self.json_data_list.append(saveDict) # !!!
+        self.json_data_diff_list.append(saveDictDiff)
         self.epoch += 1
 
 
-    def start(self, host='0.0.0.0', port=5000, browser=True):
-        """
-        サーバーを開始して、Webブラウザを起動。
-        -> 不要
-        """
     def update(self, model, input):
         """
         モデルのグラフを再解析して更新する
@@ -48,11 +48,9 @@ class TorchLinearViz:
         self.extract_and_save_graph(model, input)
 
     def end(self):
-        """
-        サーバーを停止し、フックを解除。
-        """
         self.is_running = False
         epoch_graphs_json = json.dumps(self.json_data_list)
+        epoch_graphs_json_diff = json.dumps(self.json_data_diff_list)
         html_template = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -73,14 +71,24 @@ class TorchLinearViz:
             text-align: center;
             font-size: 16px;
         }}
+        .data-switch {{
+            width: 120px;  /* ボタンの横幅 */
+            height: 40px;  /* ボタンの高さ */
+            text-align: center;
+            font-size: 16px;           
+        }}
     </style>
 </head>
 <body>
 
-    <h2>Graph / epochs</h2>
+    <h2>torchLinearViz | Animation</h2>
     
     <div id="controls">
+        <button id="toggle-data", class="data-switch">Switch Data</button>
         <button id="play-button", class="control-button">▶ Start Video</button>
+    </div>
+
+    <div>
         <label for="epoch-slider">Epoch : <span id="epoch-label"></span></label>
         <input type="range" id="epoch-slider" min="0" value="0" step="1">
         <label for="speed-slider">Speed: <span id="speed-label">x1</span></label>
@@ -101,6 +109,27 @@ class TorchLinearViz:
 
     <script> // Python から埋め込んだエポックデータ
         let epochData = {epoch_graphs_json};
+        let epochData1 = {epoch_graphs_json};  // 元のデータ
+        let epochData2 = {epoch_graphs_json_diff};  // 切り替え用データ
+        let isUsingEpochData1 = true; // 現在のデータがどちらか判別するフラグ
+        document.getElementById("toggle-data").addEventListener("click", () => {{
+            isUsingEpochData1 = !isUsingEpochData1; // フラグを反転
+            epochData = isUsingEpochData1 ? epochData1 : epochData2; // データを切り替え
+            updateGraph(parseInt(epochSlider.value)); // 現在のエポックを再描画
+            document.getElementById("toggle-data").textContent = isUsingEpochData1 ? "Weight value" : "Weight Diff";
+            let button = document.getElementById("toggle-data")
+            if (isUsingEpochData1) {{
+                button.textContent = "Value";
+                button.style.backgroundColor = "#15c222";
+                button.style.color = "white";
+            }} else {{
+                button.textContent = "Diff (abs)";
+                button.style.backgroundColor = "#FF4136";
+                button.style.color = "white";
+            }}
+
+        }});
+
         let cy;
         let epochSlider = document.getElementById("epoch-slider");
         epochSlider.max = epochData.length - 1; // 最大値をデータの長さに設定
@@ -293,5 +322,5 @@ class TorchLinearViz:
 #            stop_server()  # サーバーを停止するための関数
 #            self.server_thread.join()
 
-        print("torchLinearViz has been stopped.")
+        print("torchLinearViz has been finished.")
 
