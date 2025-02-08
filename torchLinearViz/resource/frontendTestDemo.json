@@ -4,51 +4,37 @@
             "data": {
                 "id": "fc2",
                 "type": "prim::GetAttr"
-            }, 
-	    "position": {
-                "x":0.2,
-		"y":0.5
-	    }
+            }
         },
         {
             "data": {
                 "id": "fc1",
                 "type": "prim::GetAttr"
-            }, 
-	    "position": {
-                "x":0.4,
-		"y":0.5
-	    }
+            }
         },
         {
             "data": {
                 "id": "28",
                 "type": "prim::CallMethod"
-            }, 
-	    "position": {
-                "x":0.5,
-		"y":0.5
-	    }
+            }
         },
         {
             "data": {
                 "id": "input.3",
                 "type": "aten::relu"
-            }, 
-	    "position": {
-                "x":0.6,
-		"y":0.5
-	    }
+            }
         },
         {
             "data": {
                 "id": "29",
                 "type": "prim::CallMethod"
-            }, 
-	    "position": {
-                "x":0.8,
-		"y":0.5
-	    }
+            }
+        },
+        {
+            "data": {
+                "id": "17",
+                "type": "aten::relu"
+            }
         }
     ],
     "edges": [
@@ -81,6 +67,14 @@
                 "id": "e4",
                 "source": "input.3",
                 "target": "29",
+                "width": 1
+            }
+        },
+        {
+            "data": {
+                "id": "e5",
+                "source": "29",
+                "target": "17",
                 "width": 1
             }
         }

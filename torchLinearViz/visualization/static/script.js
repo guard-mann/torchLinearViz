@@ -1,5 +1,5 @@
 // サーバーのエンドポイントにアクセスしてJSONデータを取得
-fetch('/get-graph')
+fetch('/')
     .then(response => {
         if (!response.ok) {
             throw new Error('Failed to fetch JSON data');

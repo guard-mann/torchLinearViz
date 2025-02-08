@@ -28,21 +28,22 @@ def convert_to_json_format(nodes):
 
 def extract_nodes(graph):
     nodes = []
-    edges = []
+
     for node in graph.nodes():
+      print('debug0', node)
       print(f"---\nkind: {node.kind()}, \ninputs: {[i.debugName() for i in node.inputs()]}, \noutputs: {[o.debugName() for o in node.outputs()]}")
       nodes.append({
         "kind": node.kind(),                  # ノードの種類 (例: aten::addmm)
         "inputs": [i.debugName() for i in node.inputs()],  # 入力ノード
         "outputs": [o.debugName() for o in node.outputs()] # 出力ノード
       })
-
-    
-    
+      # if "prim::GetAttr" in node.kind():
+      print('debug1 :', node.inputsAt(0).type())
+      print('debug2 :', node.outputsAt(0).type())
     return nodes
 
 def json_export(graph):
-    with open('output.csv', 'w') as f:
+    with open('./torchLinearViz/resource/frontendTestDemo.json', 'w') as f:
       json.dump(graph, f, indent=4)
 
 

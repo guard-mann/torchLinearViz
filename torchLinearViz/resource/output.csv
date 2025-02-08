@@ -1,66 +1,26 @@
 {
     "nodes": [
         {
-            "id": "14",
-            "kind": "prim::Constant",
-            "inputs": []
+            "id": "bias",
+            "kind": "prim::GetAttr",
+            "inputs": [
+                "self"
+            ]
         },
         {
-            "id": "7",
-            "kind": "prim::Constant",
-            "inputs": []
+            "id": "weight",
+            "kind": "prim::GetAttr",
+            "inputs": [
+                "self"
+            ]
         },
         {
             "id": "6",
-            "kind": "prim::Constant",
-            "inputs": []
-        },
-        {
-            "id": "fc1",
-            "kind": "prim::GetAttr",
+            "kind": "aten::linear",
             "inputs": [
-                "self"
-            ]
-        },
-        {
-            "id": "5",
-            "kind": "prim::CallMethod",
-            "inputs": [
-                "fc1",
-                "x.1"
-            ]
-        },
-        {
-            "id": "x.7",
-            "kind": "prim::CallFunction",
-            "inputs": [
-                "7",
-                "5",
-                "6"
-            ]
-        },
-        {
-            "id": "fc2",
-            "kind": "prim::GetAttr",
-            "inputs": [
-                "self"
-            ]
-        },
-        {
-            "id": "x.11",
-            "kind": "prim::CallMethod",
-            "inputs": [
-                "fc2",
-                "x.7"
-            ]
-        },
-        {
-            "id": "x.15",
-            "kind": "aten::add_",
-            "inputs": [
-                "x.11",
-                "x.1",
-                "14"
+                "input",
+                "weight",
+                "bias"
             ]
         }
     ]

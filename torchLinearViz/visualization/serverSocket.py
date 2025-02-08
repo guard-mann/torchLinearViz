@@ -60,10 +60,16 @@ def send_json_data():
 def handle_start():
     socketio.start_background_task(send_json_data)
 
-def start_server(host='0.0.0.0', port=5000, browser=False):
+def start_server(host='0.0.0.0', port=5000, browser=True):
     free_port = find_free_port(port)
-    if browser:
-        url = f"http://localhost:{free_port}"
-        Thread(target=webbrowser.open, args=(url,), daemon=True).start()
+    #if browser:
+    #    url = f"http://localhost:{free_port}"
+    #    Thread(target=webbrowser.open, args=(url,), daemon=True).start()
         
     socketio.run(app, host=host, port=free_port)
+
+def stop_server():
+    """
+    サーバーを停止する。
+    """
+    socketio.stop()

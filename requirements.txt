@@ -1,1 +1,6 @@
+flask
+flask-socketio
 torch
+pybind11
+numpy
+wheel

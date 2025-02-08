@@ -1,5 +1,5 @@
 // WebSocket サーバーに接続
-const socket = io.connect('http://localhost:5000');
+const socket = io.connect('http://localhost:5001');
 
 const viewportWidth = window.innerWidth;
 const viewportHeight = window.innerHeight;
@@ -94,8 +94,11 @@ let cy = cytoscape({
         'line-color': '#090808',
         'target-arrow-color': '#090808',
         'target-arrow-shape': 'triangle',
-	'curve-style': 'bezier',
-	'opacity': 0.5
+	'curve-style': 'haystack',
+	'opacity': 0.5,
+	'line-dash-pattern': [6, 3],  // 破線のパターン（線の長さ, 間隔）
+	'line-dash-offset': 0  // 初期位置
+
       }
     }
   ],
@@ -103,8 +106,22 @@ let cy = cytoscape({
     name: 'dagre',
     rankSep: 500,
     nodeSep: 500,
+    edgeSep: 50
   },
 });
+
+
+function animateEdges() {
+    let offset = 0;
+    setInterval(() => {
+        offset -= 1;  // 破線を左に移動
+        cy.edges().forEach(edge => {
+            edge.style('line-dash-offset', offset);
+        });
+    }, 50);  // 50msごとに更新（スムーズなアニメーション）
+}
+
+
 
 socket.on('connect', () => {
     console.log('WebSocket connected');
@@ -128,6 +145,8 @@ socket.on('update_graph', (data) => {
       name: 'dagre',
       rankSep: 500,
       nodeSep: 500,
+      edgeSep: 50,
+
     }).run();
     initialized = true;
   } else {
@@ -138,6 +157,8 @@ socket.on('update_graph', (data) => {
       name: 'dagre',
       rankSep: 500,
       nodeSep: 500,
+      edgeSep: 50,
+
     }).run();
   }
 });

@@ -1,4 +1,11 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
+import pybind11
+import torch
+import sys
+import os
+
+
+
 
 setup(
     name='torchlinearviz',  # モジュール名（PyPIで公開される名前）
@@ -15,6 +22,7 @@ setup(
         'flask',
         'flask-socketio',
         'torch',  # PyTorchを依存パッケージに追加
+        'pybind11',
     ],
     entry_points={
         'console_scripts': [
