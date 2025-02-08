@@ -108,6 +108,17 @@ class TorchLinearViz:
         <label for="speed-slider">Speed: <span id="speed-label">x1</span></label>
         <input type="range" id="speed-slider" min="1" max="10" value="1" step="1">
     </div>
+
+    <div style="display: flex; align-items: center;">
+	    <span>Weight(MIN)  </span>
+	    <input type="number" id="min-value-input" value="0" step="0.01" style="width: 60px; margin-right: 10px;"> 
+	    <span>Weight(MAX) </span>
+	    <input type="number" id="max-value-input" value="1" step="0.01" style="width: 60px; margin: 0 10px;"> 
+	    <button id="apply-width-btn">Apply</button>
+    </div>
+
+
+
     <div id="cy"></div>
 
     <script> // Python から埋め込んだエポックデータ
@@ -129,6 +140,31 @@ class TorchLinearViz:
         speedLabel.textContent = `x${{speedSlider.value}}`;
         let playbackSpeed = parseInt(speedSlider.value); // 初期速度（1エポック/秒）
 
+        let minValue = 0;
+        let maxValue = 1;
+
+        const minInput = document.getElementById("min-value-input");
+        const maxInput = document.getElementById("max-value-input");
+        const applyButton = document.getElementById("apply-width-btn");
+
+        // "Apply" ボタンを押したときに反映
+        applyButton.addEventListener("click", function() {{
+            // 入力値を取得し、数値に変換
+            minValue = parseFloat(minInput.value);
+            maxValue = parseFloat(maxInput.value);
+
+            // 入力値が不正でないかチェック
+            if (isNaN(minValue) || isNaN(maxValue) || minValue >= maxValue) {{
+            alert("Invalid values! Ensure that minValue < maxValue and both are numbers.");
+            return;
+            }}
+
+            // Cytoscape のエッジ幅を更新
+            cy.style()
+              .selector("edge")
+              .style({{ "width": `mapData(width, ${{minValue}}, ${{maxValue}}, 1, 5)` }})
+              .update();
+        }})
 
 
         function updateGraph(epochIndex) {{
