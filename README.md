@@ -86,8 +86,7 @@ for epoch in range(epochs):
         optimizer.step()
         total_loss += loss.item()
 
-    # ❗️ here updated
-weights of model are reflected.
+    # ❗️ here updated weights of model are reflected.
     torchlinearviz.update(model, images)
 
     print(f"Epoch [{epoch+1}/{epochs}], Loss: {total_loss/len(train_loader):.4f}")
