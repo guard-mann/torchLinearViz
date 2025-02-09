@@ -35,42 +35,42 @@ import torchvision.transforms as transforms
 # here import torchLinearViz
 from torchLinearViz import TorchLinearViz
 
-# 🔹 1. データの前処理
+# 🔹 1. preprocess
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
 
-# 🔹 2. データセットの読み込み
+# 🔹 2. read Dataset
 train_dataset = torchvision.datasets.MNIST(root='./data', train=True, download=True, transform=transform)
 test_dataset = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-# 🔹 3. MLP（全結合ニューラルネットワーク）モデルの定義
+# 🔹 3. MLP definition
 class MLP(nn.Module):
     def __init__(self):
         super(MLP, self).__init__()
         self.model = nn.Sequential(
-            nn.Flatten(),  # 画像(28x28) → 1次元 (784)
-            nn.Linear(28*28, 5),  # 入力 784 → 隠れ層 256 
-            nn.Linear(5, 5),  # 隠れ層 256 → 128
-            nn.Linear(5, 10)  # 出力 10クラス
+            nn.Flatten(),  # (28x28) → (784)
+            nn.Linear(28*28, 5),  # 784 → 256 
+            nn.Linear(5, 5),  #  256 → 128
+            nn.Linear(5, 10)  #  10 class
         )
 
     def forward(self, x):
         return self.model(x)
 
-# 🔹 4. モデルの作成
+# 🔹 4. call model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = MLP().to(device)
 
-# 🔹 5. 損失関数と最適化手法
+# 🔹 5. loss & optimizer
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # torchLinearViz initialize
 torchlinearviz = TorchLinearViz(model)
 
-# 🔹 6. 学習
+# 🔹 6. train
 epochs = 100
 for epoch in range(epochs):
     model.train()
