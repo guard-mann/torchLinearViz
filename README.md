@@ -23,6 +23,9 @@ pip install torchLinearViz
  Following code is from `./tests/demoMNIST.py` of this repo. Inserting "Initializer", "Update", "Save" lines, this library works, and `epoch_visualizer.html` will be generated.
 
 ```
+# Import Library
+from torchLinearViz import TorchLinearViz
+
 # torchLinearViz Initialize
 torchlinearviz = TorchLinearViz(model)
 
