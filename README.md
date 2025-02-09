@@ -52,7 +52,7 @@ class MLP(nn.Module):
         self.model = nn.Sequential(
             nn.Flatten(),  # 画像(28x28) → 1次元 (784)
             nn.Linear(28*28, 5),  # 入力 784 → 隠れ層 256 
-            nn.Linearと(5, 5),  # 隠れ層 256 → 128
+            nn.Linear(5, 5),  # 隠れ層 256 → 128
             nn.Linear(5, 10)  # 出力 10クラス
         )
 
