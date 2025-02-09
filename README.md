@@ -24,6 +24,6 @@ for epoch in range(epochs):
     torchlinearviz.update(model, images)
     print(f"Epoch [{epoch+1}/{epochs}], Loss: {total_loss/len(train_loader):.4f}")
 
-torchlinearviz.end()``````
+torchlinearviz.end()
 
 
