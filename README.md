@@ -32,7 +32,7 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 
-# here import torchLinearViz
+# ❗️ here import torchLinearViz
 from torchLinearViz import TorchLinearViz
 
 # 🔹 1. preprocess
@@ -67,7 +67,7 @@ model = MLP().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# torchLinearViz initialize
+# ❗️ here torchLinearViz initialize
 torchlinearviz = TorchLinearViz(model)
 
 # 🔹 6. train
@@ -86,11 +86,12 @@ for epoch in range(epochs):
         optimizer.step()
         total_loss += loss.item()
 
-    # here updates weights of model
+    # ❗️ here updated
+weights of model are reflected.
     torchlinearviz.update(model, images)
 
     print(f"Epoch [{epoch+1}/{epochs}], Loss: {total_loss/len(train_loader):.4f}")
 
-# here generates html file
+# ❗️ here generates html file
 torchlinearviz.end()
 ```
