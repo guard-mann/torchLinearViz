@@ -103,7 +103,9 @@ class TorchLinearViz:
 	    <button id="apply-width-btn">Apply</button>
     </div>
 
-
+    <div>
+        <button id="toggle-theme", class="theme-switch">ColorScheme</button>
+    </div>
 
     <div id="cy"></div>
 
@@ -112,6 +114,7 @@ class TorchLinearViz:
         let epochData1 = {epoch_graphs_json};  // 元のデータ
         let epochData2 = {epoch_graphs_json_diff};  // 切り替え用データ
         let isUsingEpochData1 = true; // 現在のデータがどちらか判別するフラグ
+        let isDarkMode = true;
         document.getElementById("toggle-data").addEventListener("click", () => {{
             isUsingEpochData1 = !isUsingEpochData1; // フラグを反転
             epochData = isUsingEpochData1 ? epochData1 : epochData2; // データを切り替え
@@ -129,6 +132,43 @@ class TorchLinearViz:
             }}
 
         }});
+
+
+        document.getElementById("toggle-theme").addEventListener("click", () => {{
+            isDarkMode = !isDarkMode; // フラグを反転
+
+            // 背景色を変更
+            document.getElementById("ById").style.backgroundColor = isDarkMode ? "#000000" : "#FFFFFF";  // 黒 or 白
+
+            // Cytoscapeのエッジの色を変更
+            cy.style()
+                .selector('edge')
+                .style({{
+                    'line-color': isDarkMode ? '#FFFFFF' : '#666', // 白 or グレー
+                    'target-arrow-color': isDarkMode ? '#FFFFFF' : '#666' // 矢印の色も変更
+                }})
+                .selector('node')
+                .style({{
+                    'color': isDarkMode ? 'white' : 'black'
+                }})
+                .update();
+
+            // ボタンのラベルと色を変更
+            let button = document.getElementById("toggle-theme");
+            if (isDarkMode) {{
+                button.textContent = "ColorScheme (Dark)";
+                button.style.backgroundColor = "#444";  // ダークモードのボタン色
+                button.style.color = "white";
+            }} else {{
+                button.textContent = "ColorScheme (Light)";
+                button.style.backgroundColor = "#DDD";  // ライトモードのボタン色
+                button.style.color = "black";
+            }}
+        }});
+
+
+
+
 
         let cy;
         let epochSlider = document.getElementById("epoch-slider");
