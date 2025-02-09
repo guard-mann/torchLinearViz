@@ -3,7 +3,8 @@
 ![demo image](./image/overview.png)
 
 # demo Code
- Following code is from ./tests/demoMNIST.py of this repo.
+ Following code is from `./tests/demoMNIST.py` of this repo.
+
 ```
 # torchLinearViz初期化
 torchlinearviz = TorchLinearViz(model)
