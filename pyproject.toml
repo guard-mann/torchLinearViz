@@ -1,4 +1,18 @@
 [build-system]
-requires = ["setuptools", "wheel", "pybind11", "torch"]
+requires = ["setuptools", "wheel", "torch"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "torchLinearViz"
+version = "0.1.2"
+description = "A library for visualizing PyTorch graph edge changes during training"
+authors = [{name = "guard-mann", email = "tomjrekslw3957@gmail.com"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+keywords = ["pytorch", "graph", "visualization"]
+requires-python = ">=3.10"
+dependencies = [
+    "torch"
+]
+[project.urls]
+"Source Code" = "https://github.com/guard-mann/torchLinearViz"
