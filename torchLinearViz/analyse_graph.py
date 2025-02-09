@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import json
 
 def convert_to_json_format(nodes, edges):
     return {"nodes": nodes, "edges": edges}
