@@ -9,9 +9,9 @@ pip install torchLinearViz
 ```
 
 # Generated file
-![demo of html file usage](./movie/manual.gif)
+`epoch_visualizer.html` file is generated. In this file you can operate as the gif below.
 
-As the gif above
+![demo of html file usage](./movie/manual.gif)
 
 - You can change view by "Switch Data" button (`Value` means value of weight, `Diff` means difference between last epoch)
 - By "Start Video" button, you can see animation across epoch, this can zoom up or change position and position of node as you like.
