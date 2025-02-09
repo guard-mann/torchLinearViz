@@ -1,5 +1,8 @@
 # torchLinearViz
+Rleased torchLinearViz on https://pypi.org/project/torchLinearViz/
+
 This is a tool to draw Neural Network architecture designed by PyTorch by Unit level especially in Linear layer. (other layers are drawn through layer-level like following figure.)
+
 ![demo image](./image/overview.png)
 
 
