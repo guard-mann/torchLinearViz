@@ -51,9 +51,9 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.model = nn.Sequential(
             nn.Flatten(),  # (28x28) → (784)
-            nn.Linear(28*28, 5),  # 784 → 256 
-            nn.Linear(5, 5),  #  256 → 128
-            nn.Linear(5, 10)  #  10 class
+            nn.Linear(28*28, 5),  # 784 → 5 
+            nn.Linear(5, 5),  #  5 → 5
+            nn.Linear(5, 10)  #  5 → 10 class
         )
 
     def forward(self, x):
