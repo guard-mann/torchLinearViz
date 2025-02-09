@@ -2,8 +2,10 @@
 
 ![demo image](./image/overview.png)
 
-# demo Code (from ./tests/demoMNIST.py)
-```# torchLinearViz初期化
+# demo Code
+ Following code is from ./tests/demoMNIST.py of this repo.
+```
+# torchLinearViz初期化
 torchlinearviz = TorchLinearViz(model)
 
 epochs = 100
@@ -21,9 +23,9 @@ for epoch in range(epochs):
         optimizer.step()
         total_loss += loss.item()
 
+    # update weight data
     torchlinearviz.update(model, images)
     print(f"Epoch [{epoch+1}/{epochs}], Loss: {total_loss/len(train_loader):.4f}")
-
+# Save html file
 torchlinearviz.end()
-
-
+```
