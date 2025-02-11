@@ -12,7 +12,7 @@ pip install torchLinearViz
 ```
 
 # Generated file
-`epoch_visualizer.html` file is generated. In this file you can operate as the gif below.
+`epoch_visualizer.html` file will be generated (example html is on `./tests/DemoOutput.html` of this repo). In this file you can operate as the gif below.
 
 ![demo of html file usage](./movie/manual.gif)
 
