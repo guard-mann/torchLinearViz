@@ -134,7 +134,7 @@ class TorchLinearViz:
             isDarkMode = !isDarkMode; // フラグを反転
 
             // 背景色を変更
-            document.getElementById("ById").style.backgroundColor = isDarkMode ? "#000000" : "#FFFFFF";  // 黒 or 白
+            document.getElementById("cy").style.backgroundColor = isDarkMode ? "#000000" : "#FFFFFF";  // 黒 or 白
 
             // Cytoscapeのエッジの色を変更
             cy.style()
